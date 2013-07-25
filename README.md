@@ -14,7 +14,8 @@ Directory Structure
 -------------------
 
 This script creates the basic directory structure showed here:
-![Basic FF extension directory structure](http://blog.mozilla.org/addons/files/2009/01/extension-structure.png "Basic FF extension directory structure").
+
+![Basic FF extension directory structure](http://blog.mozilla.org/addons/files/2009/01/extension-structure.png "Basic FF extension directory structure")
 
 It also initializes the following files with a "skeleton" contents:
 
