@@ -46,9 +46,9 @@ CHROME_MANIFEST="content	$EXT_DIR	chrome/content/
 content	$EXT_DIR	chrome/content/	contentaccessible=yes
 overlay	chrome://browser/content/browser.xul	chrome://$EXT_DIR/content/browser.xul
 
-LOCALE_DIR$EXT_DIR	en-US	locale/en-US/
+locale	$EXT_DIR	en-US	locale/en-US/
 
-SKIN_DIR$EXT_DIR	classic/1.0	skin/
+skin	$EXT_DIR	classic/1.0	skin/
 style	chrome://global/content/customizeToolbar.xul	chrome://$EXT_DIR/skin/skin.css"
 
 # browser.xul
@@ -87,6 +87,16 @@ OPTIONS_XUL="<?xml version=\"1.0\"?>
 	</prefpane>
 </prefwindow>"
 
+# pref.js
+PREF_JS="
+pref(\"extensions.$EXT_DIR.preference\", false);
+"
+
+# translations.dtd
+TRANSLATIONS_DTD="
+<!ENTITY somelocalizedmsg \"$EXTENSION_NAME\" >
+"
+
 # TODO: Should test if extension dir exist
 mkdir $EXT_DIR
 cd $EXT_DIR
@@ -108,8 +118,11 @@ DEFAULTS_DIR="defaults"
 echo "Setting up $DEFAULTS_DIR dir"
 mkdir $DEFAULTS_DIR
 cd $DEFAULTS_DIR
-mkdir preferences
 echo "$INSTALL_RDF" > install.rdf
+mkdir preferences
+cd preferences
+echo "$PREF_JS" > pref.js
+cd ..
 cd ..
 
 LOCALE_DIR="locale"
@@ -117,6 +130,9 @@ echo "Setting up $LOCALE_DIR dir"
 mkdir $LOCALE_DIR
 cd $LOCALE_DIR
 mkdir en-US
+cd en-US
+echo "$TRANSLATIONS_DTD" > translations.dtd
+cd ..
 cd ..
 
 SKIN_DIR="skin"
