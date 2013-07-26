@@ -56,7 +56,7 @@ BROWSER_XUL="<?xml version=\"1.0\"?>
 <?xml-stylesheet href=\"chrome://$EXT_DIR/skin/skin.css\" type=\"text/css\"?>
 <!DOCTYPE $EXT_DIR SYSTEM \"chrome://$EXT_DIR/locale/translations.dtd\">
 <overlay id=\"$EXTENSION_ID\" xmlns=\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\">
-	<script src="$EXT_DIR.js" />
+	<script src=\"$EXT_DIR.js\" />
 	<!-- add your xul here -->
 </overlay>"
 
