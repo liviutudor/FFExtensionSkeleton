@@ -113,7 +113,7 @@ cd $CHROME_DIR
 mkdir content
 cd content
 echo "$BROWSER_XUL" > browser.xul
-echo $"OPTIONS_XUL" > options.xul
+echo "$OPTIONS_XUL" > options.xul
 touch $EXT_DIR.js
 cd ..
 cd ..
