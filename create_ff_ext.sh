@@ -15,8 +15,8 @@ EXTENSION_HOMEPAGE="http://liviutudor.com"
 
 # install.rdf
 INSTALL_RDF="<?xml version=\"1.0\"?>
-<RDF xmlns=\"http://www.w3.org/1999/02/22-RDF-syntax-ns#\"
-     xmlns:em=\"http://www.mozilla.org/2004/em-RDF#\">
+<RDF xmlns=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"
+     xmlns:em=\"http://www.mozilla.org/2004/em-rdf#\">
 
 	<Description about=\"urn:mozilla:install-manifest\">
 		<em:id>$EXTENSION_ID</em:id>
@@ -101,15 +101,19 @@ TRANSLATIONS_DTD="
 mkdir $EXT_DIR
 cd $EXT_DIR
 
+# Install.rdf and manifest
+echo "$INSTALL_RDF" > install.rdf
+echo "$CHROME_MANIFEST" > chrome.manifest
+
+
 CHROME_DIR="chrome"
 echo "Setting up $CHROME_DIR dir"
 mkdir $CHROME_DIR
 cd $CHROME_DIR
-echo "$CHROME_MANIFEST" > chrome.manifest
 mkdir content
 cd content
 echo "$BROWSER_XUL" > browser.xul
-echo $"OPTIONS_XUL" > options.xul
+echo "$OPTIONS_XUL" > options.xul
 touch $EXT_DIR.js
 cd ..
 cd ..
@@ -118,7 +122,6 @@ DEFAULTS_DIR="defaults"
 echo "Setting up $DEFAULTS_DIR dir"
 mkdir $DEFAULTS_DIR
 cd $DEFAULTS_DIR
-echo "$INSTALL_RDF" > install.rdf
 mkdir preferences
 cd preferences
 echo "$PREF_JS" > pref.js
