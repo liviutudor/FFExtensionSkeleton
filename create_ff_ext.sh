@@ -101,11 +101,15 @@ TRANSLATIONS_DTD="
 mkdir $EXT_DIR
 cd $EXT_DIR
 
+# Install.rdf and manifest
+echo "$INSTALL_RDF" > install.rdf
+echo "$CHROME_MANIFEST" > chrome.manifest
+
+
 CHROME_DIR="chrome"
 echo "Setting up $CHROME_DIR dir"
 mkdir $CHROME_DIR
 cd $CHROME_DIR
-echo "$CHROME_MANIFEST" > chrome.manifest
 mkdir content
 cd content
 echo "$BROWSER_XUL" > browser.xul
@@ -118,7 +122,6 @@ DEFAULTS_DIR="defaults"
 echo "Setting up $DEFAULTS_DIR dir"
 mkdir $DEFAULTS_DIR
 cd $DEFAULTS_DIR
-echo "$INSTALL_RDF" > install.rdf
 mkdir preferences
 cd preferences
 echo "$PREF_JS" > pref.js
