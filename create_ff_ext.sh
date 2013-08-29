@@ -11,7 +11,7 @@ EXTENSION_DESCRIPTION="Extension description"
 EXTENSION_VERSION="1.0"
 EXTENSION_AUTHOR="Liviu Tudor"
 EXTENSION_HOMEPAGE="http://liviutudor.com"
-
+TMP_DIR="/tmp/$EXT_DIR.$$"
 
 # install.rdf
 INSTALL_RDF="<?xml version=\"1.0\"?>
@@ -98,49 +98,39 @@ TRANSLATIONS_DTD="
 "
 
 # TODO: Should test if extension dir exist
-mkdir $EXT_DIR
-cd $EXT_DIR
+mkdir -p $TMP_DIR
+pushd $TMP_DIR > /dev/null
+
+# Create all subdirs
+CHROME_DIR="chrome"
+DEFAULTS_DIR="defaults"
+LOCALE_DIR="locale"
+SKIN_DIR="skin"
+mkdir -p $CHROME_DIR/content $DEFAULTS_DIR/preferences $LOCALE_DIR/en-US $SKIN_DIR
 
 # Install.rdf and manifest
 echo "$INSTALL_RDF" > install.rdf
 echo "$CHROME_MANIFEST" > chrome.manifest
 
 
-CHROME_DIR="chrome"
 echo "Setting up $CHROME_DIR dir"
-mkdir $CHROME_DIR
-cd $CHROME_DIR
-mkdir content
-cd content
+cd $CHROME_DIR/content
 echo "$BROWSER_XUL" > browser.xul
 echo "$OPTIONS_XUL" > options.xul
 touch $EXT_DIR.js
-cd ..
-cd ..
+cd ../..
 
-DEFAULTS_DIR="defaults"
 echo "Setting up $DEFAULTS_DIR dir"
-mkdir $DEFAULTS_DIR
-cd $DEFAULTS_DIR
-mkdir preferences
-cd preferences
+cd $DEFAULTS_DIR/preferences
 echo "$PREF_JS" > pref.js
-cd ..
-cd ..
+cd ../..
 
-LOCALE_DIR="locale"
 echo "Setting up $LOCALE_DIR dir"
-mkdir $LOCALE_DIR
-cd $LOCALE_DIR
-mkdir en-US
-cd en-US
+cd $LOCALE_DIR/en-US
 echo "$TRANSLATIONS_DTD" > translations.dtd
-cd ..
-cd ..
+cd ../..
 
-SKIN_DIR="skin"
 echo "Setting up $SKIN_DIR dir"
-mkdir $SKIN_DIR
 cd $SKIN_DIR
 touch skin.css
 cd ..
@@ -148,3 +138,5 @@ cd ..
 # Back to where we started
 cd ..
 
+popd > /dev/null
+mv $TMP_DIR ./$EXT_DIR

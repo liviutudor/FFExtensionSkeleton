@@ -47,3 +47,8 @@ In order to customize the contents of the files (and some of the directories nam
 * `EXTENSION_VERSION` : version for your extension; in most cases you will probably want to start with `1.0` (default) but if you are planning on going through a lengthy development cycle, you might want to consider changing this to `0.1` or similar
 * `EXTENSION_AUTHOR` : you! derr! :D
 * `EXTENSION_HOMEPAGE` : where your extension can be downloaded from -- this can be a project on github or similar, your website, etc.
+
+Acknowledgements
+----------------
+
+Big thanks to [Sean Wong](https://twitter.com/MovingDecoy "Sean Wong") for his [initial pull request](https://github.com/liviutudor/SpringMVCSkeleton/pull/1) on [SpringMVCSkeleton](https://github.com/liviutudor/SpringMVCSkeleton) where he signalled the usage of `mkdir -p` and also introduced heredocs in the bash script. I've taken the liberty of applying the same to this script -- thanks, buddy!
