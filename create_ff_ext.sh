@@ -13,12 +13,26 @@ EXTENSION_AUTHOR="Liviu Tudor"
 EXTENSION_HOMEPAGE="http://liviutudor.com"
 TMP_DIR="/tmp/$EXT_DIR.$$"
 
-# install.rdf
-INSTALL_RDF="<?xml version=\"1.0\"?>
-<RDF xmlns=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"
-     xmlns:em=\"http://www.mozilla.org/2004/em-rdf#\">
 
-	<Description about=\"urn:mozilla:install-manifest\">
+
+# TODO: Should test if extension dir exist
+mkdir -p $TMP_DIR
+pushd $TMP_DIR > /dev/null
+
+# Create all subdirs
+CHROME_DIR="chrome"
+DEFAULTS_DIR="defaults"
+LOCALE_DIR="locale"
+SKIN_DIR="skin"
+mkdir -p $CHROME_DIR/content $DEFAULTS_DIR/preferences $LOCALE_DIR/en-US $SKIN_DIR
+
+# Install.rdf and manifest
+cat > install.rdf <<INSTALL_RDF
+<?xml version="1.0"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+	<Description about="urn:mozilla:install-manifest">
 		<em:id>$EXTENSION_ID</em:id>
 
 		<em:name>$EXTENSION_NAME</em:name>
@@ -39,10 +53,12 @@ INSTALL_RDF="<?xml version=\"1.0\"?>
 			</Description>
 		</em:targetApplication>
 	</Description>
-</RDF>"
+</RDF>
+INSTALL_RDF
 
 # chrome.manifest
-CHROME_MANIFEST="content	$EXT_DIR	chrome/content/
+cat > chrome.manifest <<CHROME_MANIFEST
+content	$EXT_DIR	chrome/content/
 content	$EXT_DIR	chrome/content/	contentaccessible=yes
 overlay	chrome://browser/content/browser.xul	chrome://$EXT_DIR/content/browser.xul
 
@@ -50,90 +66,69 @@ locale	$EXT_DIR	en-US	locale/en-US/
 
 skin	$EXT_DIR	classic/1.0	skin/
 style	chrome://global/content/customizeToolbar.xul	chrome://$EXT_DIR/skin/skin.css"
+CHROME_MANIFEST
+
+
+echo "Setting up $CHROME_DIR dir"
 
 # browser.xul
-BROWSER_XUL="<?xml version=\"1.0\"?>
-<?xml-stylesheet href=\"chrome://$EXT_DIR/skin/skin.css\" type=\"text/css\"?>
-<!DOCTYPE $EXT_DIR SYSTEM \"chrome://$EXT_DIR/locale/translations.dtd\">
-<overlay id=\"$EXTENSION_ID\" xmlns=\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\">
-	<script src=\"$EXT_DIR.js\" />
+cat > $CHROME_DIR/content/browser.xul <<BROWSER_XUL
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://$EXT_DIR/skin/skin.css" type="text/css"?>
+<!DOCTYPE $EXT_DIR SYSTEM "chrome://$EXT_DIR/locale/translations.dtd">
+<overlay id="$EXTENSION_ID" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script src="$EXT_DIR.js" />
 	<!-- add your xul here -->
-</overlay>"
+</overlay>
+BROWSER_XUL
 
 # options.xul
-OPTIONS_XUL="<?xml version=\"1.0\"?>
-<?xml-stylesheet href=\"chrome://global/skin/\" type=\"text/css\"?>
-<prefwindow title=\"$EXTENSION_NAME Preferences\" xmlns=\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\">
-	<prefpane label=\"$EXTENSION_NAME Preferences\">
+cat > $CHROME_DIR/content/options.xul <<OPTIONS_XUL
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<prefwindow title="$EXTENSION_NAME Preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<prefpane label="$EXTENSION_NAME Preferences">
 		<preferences>
-			<preference id=\"$EXT_DIR-preference\" name=\"extensions.$EXT_DIR.preference\" type=\"bool\"/>
+			<preference id="$EXT_DIR-preference" name="extensions.$EXT_DIR.preference" type="bool"/>
 		</preferences>
 
 		<groupbox>
-			<caption label=\"Settings\"/>
+			<caption label="Settings"/>
 			<grid>
 				<columns>
-					<column flex=\"4\"/>
-					<column flex=\"1\"/>
+					<column flex="4"/>
+					<column flex="1"/>
 				</columns>
 				<rows>
 					<row>
-						<label control=\"$EXT_DIR-pref\" value=\"$EXT_DIR Preference\"/>
-						<checkbox id=\"$EXT_DIR-pref\" preference=\"$EXT_DIR-preference\"/>
+						<label control="$EXT_DIR-pref" value="$EXT_DIR Preference"/>
+						<checkbox id="$EXT_DIR-pref" preference="$EXT_DIR-preference"/>
 					</row>
 				</rows>
 			</grid>
 		</groupbox>	
 	</prefpane>
-</prefwindow>"
+</prefwindow>
+OPTIONS_XUL
 
-# pref.js
-PREF_JS="
-pref(\"extensions.$EXT_DIR.preference\", false);
-"
+touch $CHROME_DIR/content/$EXT_DIR.js
 
-# translations.dtd
-TRANSLATIONS_DTD="
-<!ENTITY somelocalizedmsg \"$EXTENSION_NAME\" >
-"
-
-# TODO: Should test if extension dir exist
-mkdir -p $TMP_DIR
-pushd $TMP_DIR > /dev/null
-
-# Create all subdirs
-CHROME_DIR="chrome"
-DEFAULTS_DIR="defaults"
-LOCALE_DIR="locale"
-SKIN_DIR="skin"
-mkdir -p $CHROME_DIR/content $DEFAULTS_DIR/preferences $LOCALE_DIR/en-US $SKIN_DIR
-
-# Install.rdf and manifest
-echo "$INSTALL_RDF" > install.rdf
-echo "$CHROME_MANIFEST" > chrome.manifest
-
-
-echo "Setting up $CHROME_DIR dir"
-cd $CHROME_DIR/content
-echo "$BROWSER_XUL" > browser.xul
-echo "$OPTIONS_XUL" > options.xul
-touch $EXT_DIR.js
-cd ../..
 
 echo "Setting up $DEFAULTS_DIR dir"
-cd $DEFAULTS_DIR/preferences
-echo "$PREF_JS" > pref.js
-cd ../..
+# pref.js
+cat > $DEFAULTS_DIR/preferences/pref.js <<PREF_JS
+pref("extensions.$EXT_DIR.preference", false);
+PREF_JS
+
 
 echo "Setting up $LOCALE_DIR dir"
-cd $LOCALE_DIR/en-US
-echo "$TRANSLATIONS_DTD" > translations.dtd
-cd ../..
+# translations.dtd
+cat > $LOCALE_DIR/en-US/translations.dtd <<TRANSLATIONS_DTD
+<!ENTITY somelocalizedmsg "$EXTENSION_NAME" >
+TRANSLATIONS_DTD
 
 echo "Setting up $SKIN_DIR dir"
-cd $SKIN_DIR
-touch skin.css
-cd ..
+touch $SKIN_DIR/skin.css
 
 # Back to where we started
 cd ..
